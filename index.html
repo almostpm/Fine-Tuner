@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine Tuner | Prompt Optimizer</title>
+    <style>
+        /* Base styles */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e1e; color: #d4d4d4; margin: 0; padding: 20px; }
+        h1 { text-align: center; color: #4CAF50; }
+        
+        /* Layout */
+        .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .pane { flex: 1; display: flex; flex-direction: column; background: #252526; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        
+        /* Inputs */
+        textarea, pre { width: 100%; height: 300px; background: #1e1e1e; color: #d4d4d4; border: 1px solid #333; padding: 10px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; resize: none; box-sizing: border-box; }
+        
+        /* Button */
+        button { margin-top: 15px; padding: 12px; background: #0e639c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background: #1177bb; }
+        
+        /* Status area */
+        #status { margin-top: 10px; font-weight: bold; font-size: 14px; }
+        .grade-A, .grade-B { color: #4CAF50; }
+        .grade-C, .grade-D { color: #FFC107; }
+        .grade-F, .error { color: #F44336; }
+    </style>
+</head>
+<body>
+
+    <h1>🛠️ Fine Tuner Studio</h1>
+
+    <div class="container">
+        <!-- Left Pane -->
+        <div class="pane">
+            <h3>Raw Prompt</h3>
+            <textarea id="rawPrompt" placeholder="Paste your weak prompt here..."></textarea>
+            <button onclick="processPrompt()">Lint & Optimize</button>
+            <div id="status">Ready.</div>
+        </div>
+
+        <!-- Right Pane -->
+        <div class="pane">
+            <h3>Optimized Output</h3>
+            <pre id="optimizedPrompt">Output will appear here...</pre>
+        </div>
+    </div>
+
+    <script>
+        async function processPrompt() {
+            const promptText = document.getElementById('rawPrompt').value;
+            const statusDiv = document.getElementById('status');
+            const outputPre = document.getElementById('optimizedPrompt');
+
+            if (!promptText.trim()) {
+                statusDiv.innerHTML = '<span class="error">Please enter a prompt first.</span>';
+                return;
+            }
+
+            statusDiv.innerText = "Processing...";
+            statusDiv.className = "";
+            outputPre.innerText = "";
+
+            try {
+                // Communicate with the Python backend
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: promptText })
+                });
+
+                if (!response.ok) throw new Error("Server error");
+
+                const data = await response.json();
+                
+                // Update UI
+                statusDiv.innerHTML = `Grade: <span class="grade-${data.grade}">${data.grade}</span> - ${data.feedback}`;
+                outputPre.innerText = data.optimized;
+
+            } catch (error) {
+                statusDiv.innerHTML = '<span class="error">Error: Could not connect to the server. Is server.py running?</span>';
+            }
+        }
+    </script>
+
+</body>
+</html>
