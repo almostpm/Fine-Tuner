@@ -24,19 +24,19 @@ Fine Tuner works in three simple steps:
 ### ⚙️ The "Brain" Files (The Logic)
 These files do the actual work behind the scenes. They don't have buttons or screens; they just do the math.
 
-token_estimator.py (The Calculator)
+1. **token_estimator.py (The Calculator)**
 
 What it does: Counts the words and characters to guess how many "tokens" (AI word pieces) your prompt is. It prevents you from sending a message so big that the AI crashes.
 
 Uses: Basic Python math (math).
 
-linter.py (The English Teacher)
+2. **linter.py (The English Teacher)**
 
 What it does: Reads your prompt and grades it from A to F. If your prompt is too short or missing keywords like "context" or "role," it deducts points and gives you feedback.
 
 Uses: Regex (re) – which is just a way for Python to search for specific patterns in words.
 
-optimizer.py (The Editor)
+3. **optimizer.py (The Editor)**
 
 What it does: Takes your bad prompt and fixes it. It wraps your prompt in a fancy "XML" template (adding a role, goal, and formatting rules) so the AI gives you a much better answer.
 
@@ -45,13 +45,13 @@ Uses: Just pure Python logic.
 ### 🎮 The "Control" Files (The Interfaces)
 These files are how you (the human) interact with the brain.
 
-app.py (The Showroom / Front Door)
+4. **app.py (The Showroom / Front Door)**
 
 What it does: This creates the beautiful web page you see in your browser. It has the split-screen, the text boxes, and the buttons. When you click a button, it asks linter.py and optimizer.py for the answers.
 
 Uses: Gradio (a magical library that builds web pages using Python).
 
-cli.py (The Remote Control)
+5. **cli.py (The Remote Control)**
 
 What it does: This is for hardcore users. It lets you use the tool by typing commands into the black terminal screen (like python cli.py lint "my prompt") instead of clicking buttons on a website.
 
@@ -60,13 +60,13 @@ Uses: argparse (Python's built-in tool for reading terminal commands).
 ### 🛠️ The "Maintenance" Files (The Setup)
 These files make sure the app runs smoothly when you share it with the world.
 
-test_engine.py (The Quality Inspector)
+6. **test_engine.py (The Quality Inspector)**
 
 What it does: This is a robot that tests the app for you. It automatically throws bad prompts at your code to make sure it doesn't crash. If you break something, this file will yell at you.
 
 Uses: unittest (Python's built-in testing tool).
 
-setup.py (The Installation Manual)
+7. **setup.py (The Installation Manual)**
 
 What it does: If you wanted to install this app on your computer like a real program (so you could just type finetuner anywhere in your terminal), this file tells the computer how to do it.
 
